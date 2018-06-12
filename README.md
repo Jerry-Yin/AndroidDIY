@@ -2,11 +2,10 @@
 
     一、Aandroid自定义控件（View）
         
-        1. 自定义TabButton单选按钮 YinTabButton  【Kotlin】
-           
-![](images/img_tab_button.png)
+        1. 自定义TabButton单选按钮 YinTabButton  【Kotlin】 
+        //![](images/img_tab_button.png)
 <div align=center><img src="images/img_tab_button.png"/></div>
-            
+
             版本：v1.0.0
             基本功能：   
                         可直接xml布局中使用；
