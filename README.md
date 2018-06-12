@@ -4,7 +4,7 @@
         
         1. 自定义TabButton单选按钮 YinTabButton  【Kotlin】
             
-            ![image](https://github.com/Jerry-Yin/AndroidDIY/images/img_tab_button.png)
+            ![](images/img_tab_button.png)
             
             版本：v1.0.0
             基本功能：   
