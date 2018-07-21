@@ -1,15 +1,17 @@
 package com.android.jay.androiddiy.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
+import android.support.annotation.Dimension
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.android.jay.androiddiy.R
 
 /**
  * @description custom tab button
@@ -44,32 +46,42 @@ class YinTabButton : LinearLayout {
     private var colorSelected: Int? = Color.parseColor("#00b0ff")
 
     //默认标签line高度2dp
-    private var indicatorsHeight = 5
+    private var indicatorsHeight: Float = 5F
     //默认宽度match_parent
-    private var indicatorsWidth: Int? = null
-    private var indicatorsVisible = true
+    private var indicatorsWidth: Float = 100F
+    private var indicatorsVisible = false
 
 
     private var mOnClickListener: OnClickListener? = null;
 
     constructor(c: Context) : super(c) {
         this.c = c
-        initView(c)
+        initView(c, null)
     }
 
     constructor(c: Context, attrs: AttributeSet) : super(c, attrs) {
         this.c = c
-        initView(c)
+        initView(c, attrs)
     }
 
 
-    fun initView(c: Context) {
+    @SuppressLint("Recycle")
+    private fun initView(c: Context, attrs: AttributeSet?) {
         Log.d(TAG, "initView")
         Log.d(TAG, "childCount：" + this.childCount.toString())
         if (this.childCount > 0) {
             this.removeAllViews()
             mChildViews.clear()
             Log.d(TAG, " removed & now childCount：" + this.childCount.toString())
+        }
+
+        val typeArray = c.obtainStyledAttributes(attrs, R.styleable.YinTabButton)
+        if (typeArray != null) {
+            color = typeArray.getColor(R.styleable.YinTabButton_color, color!!)
+            colorSelected = typeArray.getColor(R.styleable.YinTabButton_colorSelected, colorSelected!!)
+            indicatorsVisible = typeArray.getBoolean(R.styleable.YinTabButton_indicatorsVisible, indicatorsVisible)
+            indicatorsHeight = typeArray.getDimension(R.styleable.YinTabButton_indicatorsHeight, indicatorsHeight)
+            indicatorsWidth = typeArray.getDimension(R.styleable.YinTabButton_setIndicatorWidth, indicatorsWidth)
         }
 
         for (i in 0..size - 1) {
@@ -90,15 +102,17 @@ class YinTabButton : LinearLayout {
             text.visibility = View.VISIBLE
 
             val indicators = View(c)
-            if (indicatorsWidth == null)
-                indicatorsWidth = LinearLayout.LayoutParams.MATCH_PARENT
-            indicators.layoutParams = LinearLayout.LayoutParams(indicatorsWidth!!, indicatorsHeight)
+//            if (indicatorsWidth == null) {
+//                indicatorsWidth = LinearLayout.LayoutParams.MATCH_PARENT
+//            }
+            indicators.layoutParams = LinearLayout.LayoutParams(indicatorsWidth.toInt(), indicatorsHeight.toInt())
             indicators.setBackgroundColor(color!!)
 
             if (!indicatorsVisible) {
 //                indicators.setBackgroundColor(Color.TRANSPARENT)
-                indicators.visibility = View.GONE
+                indicators.visibility = View.INVISIBLE
             }
+
             childView.addView(text)
             childView.addView(indicators)
             mChildViews.add(childView)
@@ -159,12 +173,12 @@ class YinTabButton : LinearLayout {
     fun indicatorsVisible(show: Boolean) {
         this.indicatorsVisible = show
 //        this.invalidate()
-        initView(c)
+        initView(c, null)
     }
 
-    fun setIndicatorWidth(width: Int) {
+    fun setIndicatorWidth(width: Float) {
         this.indicatorsWidth = width
-        initView(c)
+        initView(c, null)
     }
 
 //    fun setOrientation(o: Int) {
@@ -174,19 +188,19 @@ class YinTabButton : LinearLayout {
     fun setColor(color: Int) {
         this.color = color
 //        this.invalidate()
-        initView(c)
+        initView(c, null)
     }
 
     fun setSelectedColor(color: Int) {
         this.colorSelected = color
 //        this.invalidate()
-        initView(c)
+        initView(c, null)
     }
 
     fun setTitles(titles: List<String>) {
         this.titles = titles
         this.size = titles.size
-        initView(c)
+        initView(c, null)
 //        this.invalidate()
     }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="YinTabButton">
+        <attr name="color" format="color"/>
+        <attr name="colorSelected" format="color"/>
+        <attr name="indicatorsVisible" format="boolean"/>
+        <attr name="setIndicatorWidth" format="dimension"/>
+        <attr name="indicatorsHeight" format="dimension"/>
+    </declare-styleable>
+
+</resources>
