@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ytb="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activitys.MainActivity">
 
     <com.android.jay.androiddiy.views.YinTabButton
@@ -15,4 +16,11 @@
         ytb:indicatorsHeight="3dp"
         ytb:setIndicatorWidth="50dp"/>
 
-</android.support.constraint.ConstraintLayout>
+
+   <Button
+       android:id="@+id/btn_login_anim"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_margin="10dp"
+       android:text="登录动画效果"/>
+</LinearLayout>
