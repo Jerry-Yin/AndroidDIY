@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_margin="10dp"
+    android:background="@color/white"
+    android:elevation="5dp">
+
+
+    <ImageView
+        android:id="@+id/img_data"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/img_snow" />
+
+
+    <TextView
+        android:id="@+id/tv_data"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="This is a new data of RecyclerView, just for test, you'll see!" />
+
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:text="2018.07.25"
+        android:textSize="10sp" />
+</RelativeLayout>
