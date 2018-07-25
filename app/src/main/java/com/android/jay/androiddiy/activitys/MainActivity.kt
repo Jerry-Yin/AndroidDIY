@@ -1,5 +1,6 @@
 package com.android.jay.androiddiy.activitys
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -21,9 +22,13 @@ class MainActivity : AppCompatActivity() {
 
         tab_button.setOnClickListener(object : YinTabButton.OnClickListener {
             override fun onClick(view: View, position: Int) {
-                Toast.makeText(this@MainActivity, "clicked tab "+position, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "clicked tab " + position, Toast.LENGTH_SHORT).show()
             }
 
         })
+
+        btn_refresh.setOnClickListener {
+            startActivity(Intent(this, RefreshViewActivity::class.java))
+        }
     }
 }

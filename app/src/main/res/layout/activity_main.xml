@@ -18,9 +18,10 @@
 
 
    <Button
-       android:id="@+id/btn_login_anim"
+       android:id="@+id/btn_refresh"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_margin="10dp"
-       android:text="登录动画效果"/>
+       android:textAllCaps="false"
+       android:text="下拉刷新 SwiperRefreshLayout"/>
 </LinearLayout>
