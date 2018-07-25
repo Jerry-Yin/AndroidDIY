@@ -14,3 +14,12 @@
                         随意设置标签指示器indicators的狂傲颜色
             说明：未提供xml的属性配置，暂时通过代码中setXXX来设置各种属性；具体见代码 /views/YinTabButton；
             使用：暂时直接复制源代码到项目中即可；
+            
+        2. Android自带下拉刷新控件 SwipeRefreshLayout 使用
+            说明：
+                "此布局应作为视图的父级，将作为手势的结果进行刷新，并且只能支持一个直接子级"，该控件内部只能直接包含一个支持滑动的子控件（Recyclerview 、ListView、ScrollerView等）
+            此处用的是 RecyclerView，效果如下：
+<div align=center><img src="images/swiperRefreshLayout.gif"/></div>
+
+                
+             
