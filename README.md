@@ -5,7 +5,7 @@
         1. 自定义登录动画效果（非原创）
                     说明：
                         两个控件的各自动画效果叠加，注意尺寸，会影响动画衔接处的效果！
-        <div align=center><img src="images/loginAnimator.gif"/></div>
+<div align=center><img src="images/loginAnimator.gif"/></div>
         
         
         2. 自定义TabButton单选按钮 YinTabButton  【Kotlin】 
