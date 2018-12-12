@@ -16,18 +16,17 @@ import com.android.jay.androiddiy.model.News
  * @author JerryYin
  * @create 2018-07-25 10:44
  **/
-class CusRecyclerViewAdapter(
-        private var mC: Context,
-        private var mDataList: ArrayList<News>
+open class CusRecyclerViewAdapter(
+        public var mC: Context,
+        public var mDataList: ArrayList<News>
 ) : RecyclerView.Adapter<CusRecyclerViewAdapter.CusViewHolder>() {
 
 
-    class CusViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
+    open class CusViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
         var img = itemView!!.findViewById<ImageView>(R.id.img_data)
         var tv = itemView!!.findViewById<TextView>(R.id.tv_data)
         var time = itemView!!.findViewById<TextView>(R.id.tv_time)
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CusViewHolder {
 //        var view = View.inflate(mC, R.layout.item_data, parent)

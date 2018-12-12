@@ -18,7 +18,7 @@
             android:layout_height="65dip"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:src="@mipmap/img_cus_logo" />
+            android:src="@mipmap/img_cus_logo_round"/>
 
         <TextView
             android:layout_width="fill_parent"
