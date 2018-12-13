@@ -7,21 +7,68 @@
     android:orientation="vertical"
     tools:context=".activitys.MainActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="默认样式：(水平，无背景颜色)"
+        android:textSize="10sp"/>
+
     <com.android.jay.androiddiy.views.YinTabButton
-        android:id="@+id/tab_button"
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+    </com.android.jay.androiddiy.views.YinTabButton>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="自定义样式1：（包含点击的动画效果）"
+        android:textSize="10sp"/>
+
+    <com.android.jay.androiddiy.views.YinTabButton
+        android:id="@+id/tab2"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:background="@color/colorGray1"
+        android:orientation="horizontal"
+        ytb:tabSize="4"
+        ytb:titleSize="7sp"
         ytb:color="@color/colorPrimary"
         ytb:colorSelected="@color/colorAccent"
-        ytb:indicatorsHeight="3dp"
-        ytb:setIndicatorWidth="50dp"/>
+        ytb:indicatorHeight="3dp"
+        ytb:indicatorWidth="50dp"
+        ytb:isScale="true"
+        ytb:scaleValue="8">
+    </com.android.jay.androiddiy.views.YinTabButton>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="竖直排列样式1："
+        android:textSize="10sp"/>
 
-   <Button
-       android:id="@+id/btn_refresh"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_margin="10dp"
-       android:textAllCaps="false"
-       android:text="下拉刷新 SwiperRefreshLayout"/>
+    <com.android.jay.androiddiy.views.YinTabButton
+        android:id="@+id/tab3"
+        android:layout_width="45dp"
+        android:layout_height="250dp"
+        android:layout_gravity="left"
+        android:background="@color/colorGray1"
+        android:orientation="vertical"
+        ytb:tabSize="6"
+        ytb:colorSelected="@color/colorAccent"
+        ytb:indicatorHeight="3dp"
+        ytb:indicatorWidth="50dp"
+        ytb:scaleValue="6">
+    </com.android.jay.androiddiy.views.YinTabButton>
+
+    <Button
+        android:id="@+id/btn_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="bottom"
+        android:textAllCaps="false"
+        android:text="下拉刷新 SwiperRefreshLayout"/>
 </LinearLayout>

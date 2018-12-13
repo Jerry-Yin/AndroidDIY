@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.support.annotation.Dimension
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -17,6 +16,7 @@ import com.android.jay.androiddiy.R
  * @description custom tab button
  * @author JerryYin
  * @create 2018-06-11 11:13
+ * @version 1.0.1
  **/
 class YinTabButton : LinearLayout {
 
@@ -33,23 +33,27 @@ class YinTabButton : LinearLayout {
     //画笔
 //    private var paint: Paint = Paint()
     //默认水平方向
-//    private var orientation = LinearLayout.HORIZONTAL
-
+    private var mOrientation = LinearLayout.HORIZONTAL
     private var mChildViews = ArrayList<LinearLayout>()
 
     //默认长度=3
     private var size = 3
-    private var titles: List<String>? = listOf("TabA", "TabB", "TabC")
-    private var textSize: Float? = 20.0f
+//    private var titles: List<String>? = listOf("Tab", "Tab", "Tab", "Tab", "Tab")
+    private var titles = ArrayList<String>()
+    private var textSize: Float? = 10.0f
 
-    private var color: Int? = Color.parseColor("#636161")
+    private var color: Int? = Color.parseColor("#7e7d7d")
     private var colorSelected: Int? = Color.parseColor("#00b0ff")
 
     //默认标签line高度2dp
     private var indicatorsHeight: Float = 5F
     //默认宽度match_parent
     private var indicatorsWidth: Float = 100F
-    private var indicatorsVisible = false
+    private var indicatorsVisible = true
+
+    //anim asst
+    private var mIsAnimoScale = true
+    private var scaleValue = 5.0f
 
 
     private var mOnClickListener: OnClickListener? = null;
@@ -69,6 +73,7 @@ class YinTabButton : LinearLayout {
     private fun initView(c: Context, attrs: AttributeSet?) {
         Log.d(TAG, "initView")
         Log.d(TAG, "childCount：" + this.childCount.toString())
+
         if (this.childCount > 0) {
             this.removeAllViews()
             mChildViews.clear()
@@ -80,18 +85,37 @@ class YinTabButton : LinearLayout {
             color = typeArray.getColor(R.styleable.YinTabButton_color, color!!)
             colorSelected = typeArray.getColor(R.styleable.YinTabButton_colorSelected, colorSelected!!)
             indicatorsVisible = typeArray.getBoolean(R.styleable.YinTabButton_indicatorsVisible, indicatorsVisible)
-            indicatorsHeight = typeArray.getDimension(R.styleable.YinTabButton_indicatorsHeight, indicatorsHeight)
-            indicatorsWidth = typeArray.getDimension(R.styleable.YinTabButton_setIndicatorWidth, indicatorsWidth)
+            indicatorsHeight = typeArray.getDimension(R.styleable.YinTabButton_indicatorHeight, indicatorsHeight)
+            indicatorsWidth = typeArray.getDimension(R.styleable.YinTabButton_indicatorWidth, indicatorsWidth)
+            scaleValue = typeArray.getFloat(R.styleable.YinTabButton_scaleValue, scaleValue)
+            size = typeArray.getInt(R.styleable.YinTabButton_tabSize, 3)
+            textSize = typeArray.getDimension(R.styleable.YinTabButton_titleSize, 12.0f)
+            mIsAnimoScale = typeArray.getBoolean(R.styleable.YinTabButton_isScale, true)
+            titles.clear()
+            for(i in 0..size-1){
+                titles.add("Tab" + i)
+            }
+            //default: horizontal
+//            mOrientation = typeArray.getInt(R.styleable.YinTabButton_orientation, LinearLayout.HORIZONTAL)
         }
 
+        mOrientation = this.orientation
+        if (mOrientation == LinearLayout.VERTICAL)
+        //VERTICAL DO NOT SHOW INDICATORS
+            indicatorsVisible = false
+
         for (i in 0..size - 1) {
-            //带指示器
+
             val childView = LinearLayout(c)
-            childView.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f)
+            if (mOrientation == LinearLayout.VERTICAL) {
+                childView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.0f)
+            } else if (mOrientation == LinearLayout.HORIZONTAL) {
+                childView.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f)
+            }
             childView.orientation = LinearLayout.VERTICAL
             childView.gravity = Gravity.CENTER_HORIZONTAL
-//            childView.setBackgroundColor()
 
+            //文字
             val text = TextView(c)
             text.text = titles!![i]
             if (textSize != null)
@@ -101,17 +125,15 @@ class YinTabButton : LinearLayout {
             text.gravity = Gravity.CENTER
             text.visibility = View.VISIBLE
 
+            //指示器
             val indicators = View(c)
-//            if (indicatorsWidth == null) {
-//                indicatorsWidth = LinearLayout.LayoutParams.MATCH_PARENT
-//            }
             indicators.layoutParams = LinearLayout.LayoutParams(indicatorsWidth.toInt(), indicatorsHeight.toInt())
             indicators.setBackgroundColor(color!!)
-
             if (!indicatorsVisible) {
-//                indicators.setBackgroundColor(Color.TRANSPARENT)
-                indicators.visibility = View.INVISIBLE
+//                indicators.visibility = View.INVISIBLE
+                indicators.visibility = View.GONE
             }
+
 
             childView.addView(text)
             childView.addView(indicators)
@@ -142,13 +164,29 @@ class YinTabButton : LinearLayout {
 
     private fun refreshColor(index: Int) {
         for (i in 0..mChildViews.size - 1) {
+            var text = (mChildViews[i].getChildAt(0) as TextView)
+            var indicator = (mChildViews[i].getChildAt(1))
             if (i == index) {
-                (mChildViews[i].getChildAt(0) as TextView).setTextColor(colorSelected!!)
-                (mChildViews[i].getChildAt(1)).visibility = View.VISIBLE
-                (mChildViews[i].getChildAt(1)).setBackgroundColor(colorSelected!!)
+                text.setTextColor(colorSelected!!)
+                if (indicatorsVisible) {
+                    indicator.visibility = View.VISIBLE
+                    indicator.setBackgroundColor(colorSelected!!)
+                }
+                if (mIsAnimoScale) {
+                    text.textSize = textSize!!.plus(scaleValue)
+                }
             } else {
-                (mChildViews[i].getChildAt(0) as TextView).setTextColor(color!!)
-                (mChildViews[i].getChildAt(1)).visibility = View.GONE
+                text.setTextColor(color!!)
+                indicator.visibility = View.GONE
+                if (mIsAnimoScale) {
+                    text.textSize = textSize!!
+                }
+            }
+
+            if (mIsAnimoScale && index > 0 && index < mChildViews.size - 1) {
+                if (i == index - 1 || i == index + 1) {
+                    text.textSize = textSize!!.plus(scaleValue / 2)
+                }
             }
         }
     }
@@ -181,9 +219,16 @@ class YinTabButton : LinearLayout {
         initView(c, null)
     }
 
-//    fun setOrientation(o: Int) {
-//        this.orientation = o
-//    }
+
+    /**
+     *
+     * LinearLayout.HORIZONTAL
+     * LinearLayout.VERTICAL
+     */
+    fun setTabOrientation(o: Int) {
+        this.mOrientation = o
+        initView(c, null)
+    }
 
     fun setColor(color: Int) {
         this.color = color
@@ -197,7 +242,7 @@ class YinTabButton : LinearLayout {
         initView(c, null)
     }
 
-    fun setTitles(titles: List<String>) {
+    fun setTitles(titles: ArrayList<String>) {
         this.titles = titles
         this.size = titles.size
         initView(c, null)

@@ -20,7 +20,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
 
-        tab_button.setOnClickListener(object : YinTabButton.OnClickListener {
+        tab.setOnClickListener(object : YinTabButton.OnClickListener {
+            override fun onClick(view: View, position: Int) {
+                Toast.makeText(this@MainActivity, "clicked tab " + position, Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+        tab2.setOnClickListener(object : YinTabButton.OnClickListener {
+            override fun onClick(view: View, position: Int) {
+                Toast.makeText(this@MainActivity, "clicked tab " + position, Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+        tab3.setOnClickListener(object : YinTabButton.OnClickListener {
             override fun onClick(view: View, position: Int) {
                 Toast.makeText(this@MainActivity, "clicked tab " + position, Toast.LENGTH_SHORT).show()
             }
