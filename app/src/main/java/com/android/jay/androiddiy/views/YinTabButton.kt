@@ -7,16 +7,19 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.jay.androiddiy.R
+
 
 /**
  * @description custom tab button
  * @author JerryYin
  * @create 2018-06-11 11:13
- * @version 1.0.1
+ * @version 1.0.2
  **/
 class YinTabButton : LinearLayout {
 
@@ -38,7 +41,7 @@ class YinTabButton : LinearLayout {
 
     //默认长度=3
     private var size = 3
-//    private var titles: List<String>? = listOf("Tab", "Tab", "Tab", "Tab", "Tab")
+    //    private var titles: List<String>? = listOf("Tab", "Tab", "Tab", "Tab", "Tab")
     private var titles = ArrayList<String>()
     private var textSize: Float? = 10.0f
 
@@ -52,11 +55,17 @@ class YinTabButton : LinearLayout {
     private var indicatorsVisible = true
 
     //anim asst
-    private var mIsAnimoScale = true
+    private var mIsAnimoScale = false
     private var scaleValue = 5.0f
 
+    private var mCanScroller = false    //default : can not be scroll
 
-    private var mOnClickListener: OnClickListener? = null;
+    private var mIsScrolling = false
+
+    private var mCurIndex = 0
+    private var mOnClickListener: OnClickListener? = null
+    private var mOnScrollerListener: OnScrollerListener? = null
+
 
     constructor(c: Context) : super(c) {
         this.c = c
@@ -90,9 +99,9 @@ class YinTabButton : LinearLayout {
             scaleValue = typeArray.getFloat(R.styleable.YinTabButton_scaleValue, scaleValue)
             size = typeArray.getInt(R.styleable.YinTabButton_tabSize, 3)
             textSize = typeArray.getDimension(R.styleable.YinTabButton_titleSize, 12.0f)
-            mIsAnimoScale = typeArray.getBoolean(R.styleable.YinTabButton_isScale, true)
+            mIsAnimoScale = typeArray.getBoolean(R.styleable.YinTabButton_isScale, false)
             titles.clear()
-            for(i in 0..size-1){
+            for (i in 0..size - 1) {
                 titles.add("Tab" + i)
             }
             //default: horizontal
@@ -139,6 +148,8 @@ class YinTabButton : LinearLayout {
             childView.addView(indicators)
             mChildViews.add(childView)
 
+            mCurIndex = 0
+
             if (mOnClickListener != null) {
                 setOnClickListener(mOnClickListener!!)
             }
@@ -148,6 +159,8 @@ class YinTabButton : LinearLayout {
 
         for (v in mChildViews)
             this.addView(v)
+
+//        initTouchEvent()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -198,11 +211,109 @@ class YinTabButton : LinearLayout {
                 override fun onClick(p0: View?) {
                     if (p0 != null) {
                         listener.onClick(p0, i)
+                        mCurIndex = i
                         refreshColor(i)
                     }
                 }
             })
         }
+    }
+
+    fun setOnScrollerListener(listener:OnScrollerListener){
+        this.mCanScroller = true
+        this.mOnScrollerListener = listener
+    }
+
+    var posX: Float = 0.toFloat()
+    var posY: Float = 0.toFloat()
+    var curPosX: Float = 0.toFloat()
+    var curPosY: Float = 0.toFloat()
+    var minLength = 15
+//    var min = ViewConfiguration.get(getContext()).getScaledTouchSlop()    // = 20
+
+    //拦截触摸事件
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                posX = event.x
+                posY = event.y
+                Log.d(TAG, "posX="+posX)
+                Log.d(TAG, "posY="+posY)
+
+            }
+            MotionEvent.ACTION_MOVE -> {
+                curPosX = event.x
+                curPosY = event.y
+                Log.d(TAG, "curPosX="+curPosX)
+                Log.d(TAG, "curPosX="+curPosX)
+            }
+            MotionEvent.ACTION_UP -> {
+                if (mOrientation == LinearLayout.VERTICAL) {
+                    var sy = curPosY - posY
+                    Log.d(TAG, "sy = " + sy)
+                    if (!curPosY.equals(0.toFloat()) && Math.abs(sy) > minLength) {
+                        mIsScrolling = true
+                        if (sy > 0) {
+                            //向下滑動
+                            Log.d(TAG, "向下滑动")
+                            scrollerRefresh(true)
+                        } else if (sy < 0) {
+                            //向上滑动
+                            Log.d(TAG, "向上滑动")
+                            scrollerRefresh(false)
+                        }
+                        posY = 0.0f
+                        curPosY = 0.0f
+                        return true
+                    }
+                } else if (mOrientation == LinearLayout.HORIZONTAL) {
+                    var sx = curPosX - posX
+                    Log.d(TAG, "sx = " + sx)
+                    if (!curPosX.equals(0.toFloat()) && Math.abs(sx) > minLength) {
+                        mIsScrolling = true
+                        if (sx > 0) {
+                            //向下滑動
+                            Log.d(TAG, "向右滑动")
+                            scrollerRefresh(true)
+                        } else if (sx < 0) {
+                            //向上滑动
+                            Log.d(TAG, "向左滑动")
+                            scrollerRefresh(false)
+                        }
+                        posX = 0.0f
+                        curPosX = 0.0f
+                        return true
+                    }
+                }
+                mIsScrolling = false
+            }
+        }
+        Log.d(TAG, "scrolling="+mIsScrolling)
+        return false
+    }
+
+    private fun scrollerRefresh(add: Boolean) {
+        Log.d(TAG, "mcurindex0 =" + mCurIndex)
+        var needRefresh = false
+        if (add) {
+            if (mCurIndex < mChildViews.size - 1) {
+                mCurIndex++
+                needRefresh = true
+            }
+        } else {
+            if (mCurIndex > 0) {
+                mCurIndex--
+                needRefresh = true
+            }
+        }
+        if (needRefresh && mCanScroller) {
+            refreshColor(mCurIndex)
+            if (mOnScrollerListener != null)
+                mOnScrollerListener!!.onScroller(mChildViews[mCurIndex], mCurIndex)
+        }
+        Log.d(TAG, "mcurindex1 =" + mCurIndex)
+
+
     }
 
 
@@ -249,6 +360,9 @@ class YinTabButton : LinearLayout {
 //        this.invalidate()
     }
 
+    fun canScroller(can: Boolean){
+        this.mCanScroller = can
+    }
 
     interface OnClickListener : View.OnClickListener {
 
@@ -256,5 +370,9 @@ class YinTabButton : LinearLayout {
         }
 
         fun onClick(view: View, position: Int)
+    }
+
+    interface OnScrollerListener {
+        fun onScroller(view: View, position: Int)
     }
 }
