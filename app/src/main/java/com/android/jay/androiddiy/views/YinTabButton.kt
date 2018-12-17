@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -146,6 +148,9 @@ class YinTabButton : LinearLayout {
 
             childView.addView(text)
             childView.addView(indicators)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                childView.background = resources.getDrawable(R.drawable.ripple_bgd)
+            }
             mChildViews.add(childView)
 
             mCurIndex = 0
@@ -228,8 +233,9 @@ class YinTabButton : LinearLayout {
     var posY: Float = 0.toFloat()
     var curPosX: Float = 0.toFloat()
     var curPosY: Float = 0.toFloat()
-    var minLength = 15
+    var minLength = 25
 //    var min = ViewConfiguration.get(getContext()).getScaledTouchSlop()    // = 20
+    var isMove = false
 
     //拦截触摸事件
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -244,14 +250,15 @@ class YinTabButton : LinearLayout {
             MotionEvent.ACTION_MOVE -> {
                 curPosX = event.x
                 curPosY = event.y
-                Log.d(TAG, "curPosX="+curPosX)
-                Log.d(TAG, "curPosX="+curPosX)
+                Log.d(TAG, "curPosX-move="+curPosX)
+                Log.d(TAG, "curPosY-move="+curPosY)
+                isMove = true
             }
             MotionEvent.ACTION_UP -> {
                 if (mOrientation == LinearLayout.VERTICAL) {
                     var sy = curPosY - posY
                     Log.d(TAG, "sy = " + sy)
-                    if (!curPosY.equals(0.toFloat()) && Math.abs(sy) > minLength) {
+                    if (isMove && !curPosY.equals(0.toFloat()) && Math.abs(sy) > minLength) {
                         mIsScrolling = true
                         if (sy > 0) {
                             //向下滑動
@@ -262,14 +269,14 @@ class YinTabButton : LinearLayout {
                             Log.d(TAG, "向上滑动")
                             scrollerRefresh(false)
                         }
-                        posY = 0.0f
-                        curPosY = 0.0f
                         return true
                     }
                 } else if (mOrientation == LinearLayout.HORIZONTAL) {
                     var sx = curPosX - posX
+                    Log.d(TAG, "curPosX1="+curPosX)
+                    Log.d(TAG, "curPosY1="+curPosY)
                     Log.d(TAG, "sx = " + sx)
-                    if (!curPosX.equals(0.toFloat()) && Math.abs(sx) > minLength) {
+                    if (isMove && !curPosX.equals(0.toFloat()) && Math.abs(sx) > minLength) {
                         mIsScrolling = true
                         if (sx > 0) {
                             //向下滑動
@@ -280,12 +287,15 @@ class YinTabButton : LinearLayout {
                             Log.d(TAG, "向左滑动")
                             scrollerRefresh(false)
                         }
-                        posX = 0.0f
-                        curPosX = 0.0f
                         return true
                     }
                 }
+                posX = 0.0f
+                posY = 0.0f
+                curPosX = 0.0f
+                curPosY = 0.0f
                 mIsScrolling = false
+                isMove = false
             }
         }
         Log.d(TAG, "scrolling="+mIsScrolling)
